@@ -16,6 +16,7 @@ import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import { Filter, MoreHorizontal } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { paymentApi, type Payment } from "./tableDemoApi";
+import { Badge } from "@/components/ui/badge";
 
 // Custom header component for status filtering
 const StatusFilterHeader = ({
@@ -200,21 +201,18 @@ export default function TableDemo2() {
       ),
       size: 120,
       cell: ({ row }) => (
-        <div
-          className={cn(
-            "truncate rounded-[6px] px-[29px] py-1 text-sm font-normal",
-            {
-              "border border-[#0CAF60]/40 bg-[#0CAF60]/10 text-[#0CAF60]":
-                row.getValue("status") === "Paid",
-              "border border-[#E03137]/40 bg-[#E03137]/10 text-[#E03137]":
-                row.getValue("status") === "Unpaid",
-              "border border-[#0A4269]/40 bg-[#0A4269]/20 text-[#0A4269]":
-                row.getValue("status") === "Save",
-            }
-          )}
+        <Badge
+          className={cn("truncate px-[20px] py-1 text-sm font-normal", {
+            "border border-[#0CAF60]/40 bg-[#0CAF60]/10 text-[#0CAF60]":
+              row.getValue("status") === "Paid",
+            "border border-[#E03137]/40 bg-[#E03137]/10 text-[#E03137]":
+              row.getValue("status") === "Unpaid",
+            "border border-[#285f86]/40 bg-[#285f86]/20 text-[#99b1c2]":
+              row.getValue("status") === "Save",
+          })}
         >
           {row.getValue("status")}
-        </div>
+        </Badge>
       ),
     },
     {
