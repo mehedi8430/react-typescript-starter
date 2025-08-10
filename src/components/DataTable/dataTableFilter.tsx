@@ -1,7 +1,5 @@
-import SearchInput from "@/components/SearchInput";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
-import DateTimePicker from "@/components/DateTimePicker";
 import type { Table, VisibilityState } from "@tanstack/react-table";
 
 import {
@@ -12,6 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import SearchInput from "../SearchInput";
+import DateTimePicker from "../DateTimePicker";
 
 interface ColumnDef {
   id: string;
@@ -42,14 +42,12 @@ export function DataTableFilter<T>({
   columns,
   searchPlaceholder = "Search...",
   showDatePicker = true,
-  showExportButton = true,
+  showExportButton = false,
   exportButtonText = "Export",
   onExportClick,
   searchInputClassName = "w-full lg:w-[443px]",
   columnVisibility,
 }: DataTableFilterProps<T>) {
-  const { t } = useTranslation("table");
-
   // Get filterable columns (exclude select and actions columns if present)
   const getFilterableColumns = () => {
     return columns.filter(
@@ -97,11 +95,11 @@ export function DataTableFilter<T>({
                 className="flex items-center gap-2"
               >
                 <ChevronDown className="h-4 w-4" />
-                {t("Column Filter")}
+                Column Filter
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>{t("Toggle Columns")}</DropdownMenuLabel>
+              <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {filterableColumns.map((column) => (
                 <DropdownMenuCheckboxItem
@@ -121,10 +119,6 @@ export function DataTableFilter<T>({
               className="hidden rounded-lg lg:flex lg:self-end"
               onClick={onExportClick}
             >
-              <ReactSVG
-                src={assets.icons.export_icon}
-                className="text-muted-foreground"
-              />
               {exportButtonText}
             </Button>
           )}
@@ -138,10 +132,6 @@ export function DataTableFilter<T>({
             className="rounded-lg lg:hidden"
             onClick={onExportClick}
           >
-            <ReactSVG
-              src={assets.icons.export_icon}
-              className="text-muted-foreground"
-            />
             {exportButtonText}
           </Button>
         )}

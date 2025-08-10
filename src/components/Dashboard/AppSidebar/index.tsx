@@ -87,7 +87,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       ],
     },
     {
-      title: "All Table",
+      title: "All Table Demos",
       url: "/dashboard/tables",
       icon: <DueListIcon />,
       end: true,

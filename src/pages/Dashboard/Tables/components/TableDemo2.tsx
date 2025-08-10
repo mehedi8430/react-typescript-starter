@@ -4,6 +4,7 @@ import {
 } from "@/components/DataTable/dataTable";
 import { DataTableFilter } from "@/components/DataTable/dataTableFilter";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,7 +76,7 @@ const StatusFilterHeader = ({
   );
 };
 
-export default function TableDemo1() {
+export default function TableDemo2() {
   const tableRef = useRef<DataTableHandle<Payment> | null>(null);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -130,6 +131,31 @@ export default function TableDemo1() {
   }, [filteredPayments]);
 
   const columns: ColumnDef<Payment>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="border-foreground/50"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="border-border"
+        />
+      ),
+      size: 50,
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "invoice",
       header: () => <div className="text-start">Transaction Number</div>,
@@ -253,7 +279,9 @@ export default function TableDemo1() {
   return (
     <section className="">
       <div className="flex flex-col items-center justify-between space-y-1 lg:flex-row">
-        <h1 className="text-xl font-semibold md:text-[26px]">Basic Table</h1>
+        <h1 className="text-xl font-semibold md:text-[26px]">
+          Table with Fixed Actionss Column
+        </h1>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -280,6 +308,9 @@ export default function TableDemo1() {
               columns={tableHeaderColumns}
               searchPlaceholder="search-placeholder"
               showDatePicker={true}
+              showExportButton={true}
+              exportButtonText="Export"
+              onExportClick={() => console.log("Export clicked")}
               columnVisibility={columnVisibility}
             />
           )}
@@ -307,6 +338,7 @@ export default function TableDemo1() {
             ref={tableRef}
             columnVisibility={columnVisibility}
             setColumnVisibility={setColumnVisibility}
+            isActionsFixed={true}
           />
         </div>
       </div>

@@ -29,6 +29,7 @@ import React, {
 import { Skeleton } from "../ui/skeleton";
 import SelectInput, { type SelectOption } from "../SelectInput/index.tsx";
 import AppPagination from "../AppPagination/index.tsx";
+import { cn } from "@/lib/utils.ts";
 
 export interface DataTableHandle<TData> {
   table: TableType<TData>;
@@ -48,6 +49,7 @@ export interface DataTableProps<TData, TValue> {
   actions?: (row: TData) => React.ReactNode;
   columnVisibility?: VisibilityState;
   setColumnVisibility?: (updater: Updater<VisibilityState>) => void;
+  isActionsFixed?: boolean;
 }
 
 function DataTableInner<TData, TValue>(
@@ -64,6 +66,7 @@ function DataTableInner<TData, TValue>(
     onLimitChange,
     columnVisibility,
     setColumnVisibility,
+    isActionsFixed = false,
   }: DataTableProps<TData, TValue>,
   ref: ForwardedRef<DataTableHandle<TData>>
 ) {
@@ -121,7 +124,7 @@ function DataTableInner<TData, TValue>(
   return (
     <div className="flex w-full flex-col space-y-4">
       {/* Table Container with Horizontal Scroll */}
-      <Table className="">
+      <Table>
         <TableHeader className="[&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -145,7 +148,11 @@ function DataTableInner<TData, TValue>(
                 </TableHead>
               ))}
               {actions && (
-                <TableHead className="sticky right-0 z-50 w-[60px] bg-gray-400 px-2 py-2 text-center font-semibold text-black sm:px-8">
+                <TableHead
+                  className={cn("w-[60px] px-2 py-2 text-center sm:px-8", {
+                    "sticky right-0 z-50 bg-primary": isActionsFixed,
+                  })}
+                >
                   <div className="truncate">Actions</div>
                 </TableHead>
               )}
@@ -178,7 +185,15 @@ function DataTableInner<TData, TValue>(
                 ))}
 
                 {actions && (
-                  <TableCell className="text-foreground sticky right-0 z-50 w-[60px] bg-gray-300 px-2 py-2 text-xs sm:px-8 sm:py-3 sm:text-sm">
+                  <TableCell
+                    className={cn(
+                      "w-[60px] px-2 py-2 text-xs sm:px-8 sm:py-3 sm:text-sm",
+                      {
+                        "sticky right-0 z-50 bg-primary shadow-md":
+                          isActionsFixed,
+                      }
+                    )}
+                  >
                     <div className="flex justify-center">
                       {actions(row.original)}
                     </div>
