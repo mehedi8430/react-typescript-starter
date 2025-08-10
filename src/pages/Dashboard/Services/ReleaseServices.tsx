@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import DeleteIcon from "@/assets/svgs/delete.svg?react";
 import AddIcon from "@/assets/svgs/add.svg?react";
-import { DataTable } from "@/components/DataTable/dataTable";
+import { DataTable } from "@/components/DataTable/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router";
 import assets from "@/assets";

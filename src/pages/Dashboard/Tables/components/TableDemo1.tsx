@@ -1,8 +1,8 @@
 import {
   DataTable,
   type DataTableHandle,
-} from "@/components/DataTable/dataTable";
-import { DataTableFilter } from "@/components/DataTable/dataTableFilter";
+} from "@/components/DataTable/DataTable";
+import { DataTableFilter } from "@/components/DataTable/DataTableFilter";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,69 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
-import { Filter, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { paymentApi, type Payment } from "./tableDemoApi";
 import { Badge } from "@/components/ui/badge";
-
-// Custom header component for status filtering
-const StatusFilterHeader = ({
-  statusFilter,
-  onStatusFilterChange,
-}: {
-  statusFilter: string;
-  onStatusFilterChange: (status: string) => void;
-}) => {
-  return (
-    <div className="flex items-center justify-center gap-2">
-      <span>Status</span>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          asChild
-          className="cursor-pointer hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0"
-        >
-          <Button variant="ghost" size="sm" className="h-6 px-2">
-            <Filter className="size-3.5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("")}
-            className={`cursor-pointer ${
-              statusFilter === "" ? "bg-accent" : ""
-            }`}
-          >
-            "All Status"
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("Paid")}
-            className={`cursor-pointer ${
-              statusFilter === "Paid" ? "bg-accent" : ""
-            }`}
-          >
-            Paid
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("Unpaid")}
-            className={`cursor-pointer ${
-              statusFilter === "Unpaid" ? "bg-accent" : ""
-            }`}
-          >
-            Unpaid
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("Save")}
-            className={`cursor-pointer ${
-              statusFilter === "Save" ? "bg-accent" : ""
-            }`}
-          >
-            Save
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
-};
+import { FilterHeader } from "@/components/DataTable/FilterHeader";
 
 export default function TableDemo1() {
   const tableRef = useRef<DataTableHandle<Payment> | null>(null);
@@ -88,6 +30,7 @@ export default function TableDemo1() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>(""); // Status filter state
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<string>(""); // Payment method filter state
 
   // Fetch payments when page, limit, or filters change
   useEffect(() => {
@@ -118,12 +61,25 @@ export default function TableDemo1() {
 
   // Client-side filtering using useMemo
   const filteredPayments = useMemo(() => {
-    if (!statusFilter) return allPayments;
+    let filtered = allPayments;
 
-    return allPayments.filter(
-      (payment) => payment.status?.toLowerCase() === statusFilter.toLowerCase()
-    );
-  }, [allPayments, statusFilter]);
+    if (statusFilter) {
+      filtered = filtered.filter(
+        (payment) =>
+          payment.status?.toLowerCase() === statusFilter.toLowerCase()
+      );
+    }
+
+    if (paymentMethodFilter) {
+      filtered = filtered.filter(
+        (payment) =>
+          payment.paymentMethod?.toLowerCase() ===
+          paymentMethodFilter.toLowerCase()
+      );
+    }
+
+    return filtered;
+  }, [allPayments, statusFilter, paymentMethodFilter]);
 
   // Update data when filtered data changes
   useEffect(() => {
@@ -168,9 +124,16 @@ export default function TableDemo1() {
     {
       accessorKey: "status",
       header: () => (
-        <StatusFilterHeader
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
+        <FilterHeader
+          headerText="Status"
+          filterValue={statusFilter}
+          onFilterChange={setStatusFilter}
+          options={[
+            { value: "Paid", label: "Paid" },
+            { value: "Unpaid", label: "Unpaid" },
+            { value: "Save", label: "Save" },
+          ]}
+          allLabel="All Status"
         />
       ),
       size: 120,
@@ -191,7 +154,18 @@ export default function TableDemo1() {
     },
     {
       accessorKey: "paymentMethod",
-      header: "Payment Method",
+      header: () => (
+        <FilterHeader
+          headerText="Payment Method"
+          filterValue={paymentMethodFilter}
+          onFilterChange={setPaymentMethodFilter}
+          options={[
+            { value: "Credit Card", label: "Credit Card" },
+            { value: "Bank Transfer", label: "Bank Transfer" },
+          ]}
+          allLabel="All Payment Methods"
+        />
+      ),
       size: 150,
       cell: ({ row }) => (
         <div className="truncate">{row.getValue("paymentMethod")}</div>
@@ -234,6 +208,7 @@ export default function TableDemo1() {
 
   const clearAllFilters = () => {
     setStatusFilter("");
+    setPaymentMethodFilter("");
     setSearchTerm("");
     setSelectedDate(null);
     setPage(1);
@@ -256,7 +231,10 @@ export default function TableDemo1() {
 
       <div className="grid grid-cols-1 gap-6">
         <div className="bg-sidebar rounded-2xl py-4">
-          {(statusFilter || searchTerm || selectedDate) && (
+          {(statusFilter ||
+            paymentMethodFilter ||
+            searchTerm ||
+            selectedDate) && (
             <div className="mb-4 px-4">
               <Button
                 variant="outline"
@@ -282,12 +260,19 @@ export default function TableDemo1() {
             />
           )}
 
-          {statusFilter && (
+          {(statusFilter || paymentMethodFilter) && (
             <div className="mb-3 px-4">
               <span className="text-muted-foreground text-sm">
                 Showing {filteredPayments.length} of {allPayments.length}{" "}
                 payments
-                {statusFilter && ` filtered by: ${statusFilter}`}
+                {(statusFilter || paymentMethodFilter) &&
+                  ` filtered by:${
+                    statusFilter ? ` Status: ${statusFilter}` : ""
+                  }${
+                    paymentMethodFilter
+                      ? ` Payment Method: ${paymentMethodFilter}`
+                      : ""
+                  }`}
               </span>
             </div>
           )}
@@ -298,7 +283,11 @@ export default function TableDemo1() {
             isLoading={isLoading}
             page={page}
             limit={limit}
-            total={statusFilter ? filteredPayments.length : total}
+            total={
+              statusFilter || paymentMethodFilter
+                ? filteredPayments.length
+                : total
+            }
             onPageChange={setPage}
             onLimitChange={setLimit}
             actions={actions}

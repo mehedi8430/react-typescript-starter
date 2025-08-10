@@ -26,7 +26,7 @@ import React, {
   useState,
   type ForwardedRef,
 } from "react";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../ui/skeleton.tsx";
 import SelectInput, { type SelectOption } from "../SelectInput/index.tsx";
 import AppPagination from "../AppPagination/index.tsx";
 import { cn } from "@/lib/utils.ts";

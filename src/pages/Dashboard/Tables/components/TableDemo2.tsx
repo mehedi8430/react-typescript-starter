@@ -1,8 +1,8 @@
 import {
   DataTable,
   type DataTableHandle,
-} from "@/components/DataTable/dataTable";
-import { DataTableFilter } from "@/components/DataTable/dataTableFilter";
+} from "@/components/DataTable/DataTable";
+import { DataTableFilter } from "@/components/DataTable/DataTableFilter";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,69 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
-import { Filter, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { paymentApi, type Payment } from "./tableDemoApi";
 import { Badge } from "@/components/ui/badge";
-
-// Custom header component for status filtering
-const StatusFilterHeader = ({
-  statusFilter,
-  onStatusFilterChange,
-}: {
-  statusFilter: string;
-  onStatusFilterChange: (status: string) => void;
-}) => {
-  return (
-    <div className="flex items-center justify-center gap-2">
-      <span>Status</span>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          asChild
-          className="cursor-pointer hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0"
-        >
-          <Button variant="ghost" size="sm" className="h-6 px-2">
-            <Filter className="size-3.5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("")}
-            className={`cursor-pointer ${
-              statusFilter === "" ? "bg-accent" : ""
-            }`}
-          >
-            "All Status"
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("Paid")}
-            className={`cursor-pointer ${
-              statusFilter === "Paid" ? "bg-accent" : ""
-            }`}
-          >
-            Paid
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("Unpaid")}
-            className={`cursor-pointer ${
-              statusFilter === "Unpaid" ? "bg-accent" : ""
-            }`}
-          >
-            Unpaid
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onStatusFilterChange("Save")}
-            className={`cursor-pointer ${
-              statusFilter === "Save" ? "bg-accent" : ""
-            }`}
-          >
-            Save
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
-};
+import { FilterHeader } from "@/components/DataTable/FilterHeader";
 
 export default function TableDemo2() {
   const tableRef = useRef<DataTableHandle<Payment> | null>(null);
@@ -194,9 +136,16 @@ export default function TableDemo2() {
     {
       accessorKey: "status",
       header: () => (
-        <StatusFilterHeader
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
+        <FilterHeader
+          headerText="Status"
+          filterValue={statusFilter}
+          onFilterChange={setStatusFilter}
+          options={[
+            { value: "Paid", label: "Paid" },
+            { value: "Unpaid", label: "Unpaid" },
+            { value: "Save", label: "Save" },
+          ]}
+          allLabel="All Status"
         />
       ),
       size: 120,
