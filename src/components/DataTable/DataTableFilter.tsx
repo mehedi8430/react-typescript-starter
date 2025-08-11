@@ -41,7 +41,7 @@ export function DataTableFilter<T>({
   table,
   columns,
   searchPlaceholder = "Search...",
-  showDatePicker = true,
+  showDatePicker = false,
   showExportButton = false,
   exportButtonText = "Export",
   onExportClick,

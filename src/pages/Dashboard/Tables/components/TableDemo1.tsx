@@ -12,11 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { Filter, MoreHorizontal } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { paymentApi, type Payment } from "./tableDemoApi";
 import { Badge } from "@/components/ui/badge";
 import { FilterHeader } from "@/components/DataTable/FilterHeader";
+import DateTimePicker from "@/components/DateTimePicker";
 
 export default function TableDemo1() {
   const tableRef = useRef<DataTableHandle<Payment> | null>(null);
@@ -28,6 +29,7 @@ export default function TableDemo1() {
   const [allPayments, setAllPayments] = useState<Payment[]>([]); // Store all data for filtering
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>(""); // Status filter state
   const [paymentMethodFilter, setPaymentMethodFilter] = useState<string>(""); // Payment method filter state
@@ -109,7 +111,22 @@ export default function TableDemo1() {
     },
     {
       accessorKey: "date",
-      header: "Date",
+      header: () => (
+        <div className="flex items-center justify-center">
+          <span>Date</span>
+          <DateTimePicker
+            onDateTimeChange={(dateTime) =>
+              setSelectedDate(dateTime ? dateTime?.toISOString() : null)
+            }
+            initialDateTime={selectedDate ? new Date(selectedDate) : undefined}
+            trigger={
+              <Button variant="ghost" size="sm" className="h-6 px-2">
+                <Filter className="size-3.5" />
+              </Button>
+            }
+          />
+        </div>
+      ),
       size: 150,
       cell: ({ row }) => <div className="truncate">{row.getValue("date")}</div>,
     },
@@ -251,11 +268,9 @@ export default function TableDemo1() {
             <DataTableFilter
               searchTerm={searchTerm}
               handleFilterChange={handleFilterChange}
-              setSelectedDate={setSelectedDate}
               table={tableRef.current.table}
               columns={tableHeaderColumns}
               searchPlaceholder="search-placeholder"
-              showDatePicker={true}
               columnVisibility={columnVisibility}
             />
           )}

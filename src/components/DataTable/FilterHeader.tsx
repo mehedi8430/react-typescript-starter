@@ -23,7 +23,7 @@ export const FilterHeader = ({
   allLabel = "All",
 }: FilterHeaderProps) => {
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center">
       <span>{headerText}</span>
       <DropdownMenu>
         <DropdownMenuTrigger

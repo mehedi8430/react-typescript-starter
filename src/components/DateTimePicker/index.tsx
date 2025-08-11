@@ -13,11 +13,13 @@ import { Button } from "../ui/button";
 interface DateTimePickerProps {
   onDateTimeChange?: (dateTime: Date | undefined) => void;
   initialDateTime?: Date;
+  trigger?: React.ReactNode;
 }
 
 export default function DateTimePicker({
   onDateTimeChange,
   initialDateTime,
+  trigger,
 }: DateTimePickerProps) {
   const [date, setDate] = useState<Date | undefined>(
     initialDateTime || new Date()
@@ -71,9 +73,11 @@ export default function DateTimePicker({
   };
 
   return (
-    <div>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        {trigger ? (
+          trigger
+        ) : (
           <Button
             variant="filter_button"
             className="focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0"
@@ -84,40 +88,40 @@ export default function DateTimePicker({
             <Funnel />
             Date and time
           </Button>
-        </PopoverTrigger>
+        )}
+      </PopoverTrigger>
 
-        <PopoverContent className="w-auto">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="bg-transparent p-0 [--cell-size:--spacing(10.5)]"
+      <PopoverContent className="w-auto">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="bg-transparent p-0 [--cell-size:--spacing(10.5)]"
+        />
+
+        <div className="border-border border-t py-2">
+          <Label htmlFor="selected_time" className="sr-only">
+            Time
+          </Label>
+          <Input
+            id="selected_time"
+            type="time"
+            step="1"
+            value={time}
+            onChange={handleTimeChange}
+            className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
           />
+        </div>
 
-          <div className="border-border border-t py-2">
-            <Label htmlFor="selected_time" className="sr-only">
-              Time
-            </Label>
-            <Input
-              id="selected_time"
-              type="time"
-              step="1"
-              value={time}
-              onChange={handleTimeChange}
-              className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-            />
-          </div>
-
-          <Button
-            disabled={!date || !time}
-            className="w-full"
-            variant="primary"
-            onClick={handleContinue}
-          >
-            Continue
-          </Button>
-        </PopoverContent>
-      </Popover>
-    </div>
+        <Button
+          disabled={!date || !time}
+          className="w-full"
+          variant="primary"
+          onClick={handleContinue}
+        >
+          Continue
+        </Button>
+      </PopoverContent>
+    </Popover>
   );
 }
