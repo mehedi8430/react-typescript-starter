@@ -1,5 +1,6 @@
 import TableDemo1 from "./components/TableDemo1";
 import TableDemo2 from "./components/TableDemo2";
+import TableDemo3 from "./components/TableDemo3";
 
 export default function TablesPage() {
   return (
@@ -14,6 +15,9 @@ export default function TablesPage() {
 
       {/* Table with Fixed Actionss Column */}
       <TableDemo2 />
+
+      {/* Table With Style Customization */}
+      <TableDemo3 />
     </section>
   );
 }
