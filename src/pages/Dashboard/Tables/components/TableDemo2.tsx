@@ -214,15 +214,6 @@ export default function TableDemo2() {
     setPage(1);
   };
 
-  const tableHeaderColumns = [
-    { id: "invoice", displayName: "Invoice" },
-    { id: "customerName", displayName: "Customer Name" },
-    { id: "date", displayName: "Date" },
-    { id: "amount", displayName: "Amount" },
-    { id: "status", displayName: "Status" },
-    { id: "paymentMethod", displayName: "Payment Method" },
-  ];
-
   return (
     <section className="">
       <div className="flex flex-col items-center justify-between space-y-1 lg:flex-row">
@@ -252,13 +243,15 @@ export default function TableDemo2() {
               handleFilterChange={handleFilterChange}
               setSelectedDate={setSelectedDate}
               table={tableRef.current.table}
-              columns={tableHeaderColumns}
               searchPlaceholder="search-placeholder"
               showDatePicker={true}
               showExportButton={true}
               exportButtonText="Export"
               onExportClick={() => console.log("Export clicked")}
               columnVisibility={columnVisibility}
+              customColumnNames={{
+                invoice: "Transaction Number",
+              }}
             />
           )}
 

@@ -6,22 +6,62 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Filter } from "lucide-react";
+import DateTimePicker from "@/components/DateTimePicker";
 
-interface FilterHeaderProps {
+interface FilterOption {
+  value: string;
+  label: string;
+}
+
+interface BaseFilterHeaderProps {
   headerText: string;
-  filterValue: string;
+  filterValue: string | null;
   onFilterChange: (value: string) => void;
-  options: { value: string; label: string }[];
+}
+
+interface DropdownFilterProps extends BaseFilterHeaderProps {
+  type?: "dropdown";
+  options: FilterOption[];
   allLabel?: string;
 }
 
-export const FilterHeader = ({
-  headerText,
-  filterValue,
-  onFilterChange,
-  options,
-  allLabel = "All",
-}: FilterHeaderProps) => {
+interface DateFilterProps extends BaseFilterHeaderProps {
+  type: "date";
+  onDateTimeChange: (dateTime: Date | null) => void;
+  initialDateTime?: Date;
+}
+
+type FilterHeaderProps = DropdownFilterProps | DateFilterProps;
+
+export const FilterHeader = (props: FilterHeaderProps) => {
+  const { headerText, filterValue, onFilterChange } = props;
+
+  if (props.type === "date") {
+    const { onDateTimeChange, initialDateTime } = props;
+
+    return (
+      <div className="flex items-center justify-center">
+        <span>{headerText}</span>
+        <DateTimePicker
+          onDateTimeChange={(dateTime) => {
+            const isoString = dateTime ? dateTime.toISOString() : "";
+            onFilterChange(isoString);
+            onDateTimeChange(dateTime ?? null);
+          }}
+          initialDateTime={initialDateTime}
+          trigger={
+            <Button variant="ghost" size="sm" className="h-6 px-2">
+              <Filter className="size-3.5" />
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
+
+  // Default dropdown behavior
+  const { options, allLabel = "All" } = props;
+
   return (
     <div className="flex items-center justify-center">
       <span>{headerText}</span>

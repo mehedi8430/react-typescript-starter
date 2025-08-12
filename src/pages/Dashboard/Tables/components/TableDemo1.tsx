@@ -12,12 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
-import { Filter, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { paymentApi, type Payment } from "./tableDemoApi";
 import { Badge } from "@/components/ui/badge";
 import { FilterHeader } from "@/components/DataTable/FilterHeader";
-import DateTimePicker from "@/components/DateTimePicker";
 
 export default function TableDemo1() {
   const tableRef = useRef<DataTableHandle<Payment> | null>(null);
@@ -112,20 +111,16 @@ export default function TableDemo1() {
     {
       accessorKey: "date",
       header: () => (
-        <div className="flex items-center justify-center">
-          <span>Date</span>
-          <DateTimePicker
-            onDateTimeChange={(dateTime) =>
-              setSelectedDate(dateTime ? dateTime?.toISOString() : null)
-            }
-            initialDateTime={selectedDate ? new Date(selectedDate) : undefined}
-            trigger={
-              <Button variant="ghost" size="sm" className="h-6 px-2">
-                <Filter className="size-3.5" />
-              </Button>
-            }
-          />
-        </div>
+        <FilterHeader
+          type="date"
+          headerText="Date"
+          filterValue={selectedDate}
+          onFilterChange={(value) => setSelectedDate(value || null)}
+          onDateTimeChange={(dateTime) =>
+            setSelectedDate(dateTime ? dateTime.toISOString() : null)
+          }
+          initialDateTime={selectedDate ? new Date(selectedDate) : undefined}
+        />
       ),
       size: 150,
       cell: ({ row }) => <div className="truncate">{row.getValue("date")}</div>,
@@ -231,15 +226,6 @@ export default function TableDemo1() {
     setPage(1);
   };
 
-  const tableHeaderColumns = [
-    { id: "invoice", displayName: "Invoice" },
-    { id: "customerName", displayName: "Customer Name" },
-    { id: "date", displayName: "Date" },
-    { id: "amount", displayName: "Amount" },
-    { id: "status", displayName: "Status" },
-    { id: "paymentMethod", displayName: "Payment Method" },
-  ];
-
   return (
     <section className="">
       <div className="flex flex-col items-center justify-between space-y-1 lg:flex-row">
@@ -269,9 +255,11 @@ export default function TableDemo1() {
               searchTerm={searchTerm}
               handleFilterChange={handleFilterChange}
               table={tableRef.current.table}
-              columns={tableHeaderColumns}
-              searchPlaceholder="search-placeholder"
+              searchPlaceholder="Search payments..."
               columnVisibility={columnVisibility}
+              customColumnNames={{
+                invoice: "Transaction Number",
+              }}
             />
           )}
 

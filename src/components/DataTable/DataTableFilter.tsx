@@ -13,18 +13,11 @@ import {
 import SearchInput from "../SearchInput";
 import DateTimePicker from "../DateTimePicker";
 
-interface ColumnDef {
-  id: string;
-  displayName: string;
-  canHide?: boolean;
-}
-
 interface DataTableFilterProps<T> {
   searchTerm: string;
   handleFilterChange: (search: string) => void;
   setSelectedDate?: (date: string | null) => void;
   table: Table<T>;
-  columns: ColumnDef[];
   searchPlaceholder?: string;
   showDatePicker?: boolean;
   showExportButton?: boolean;
@@ -32,14 +25,36 @@ interface DataTableFilterProps<T> {
   onExportClick?: () => void;
   searchInputClassName?: string;
   columnVisibility?: VisibilityState;
+  excludeFromVisibilityToggle?: string[];
+  customColumnNames?: Record<string, string>;
 }
+
+/**
+ * Renders a data table filter component with search, date picker, column visibility,
+ * and export functionality.
+ *
+ * @template T - The type of data in the table.
+ * @param {string} searchTerm - The current search term for filtering data.
+ * @param {Function} handleFilterChange - Callback to handle changes to the search term.
+ * @param {Function} [setSelectedDate] - Optional callback to handle date selection.
+ * @param {Table<T>} table - The table instance from @tanstack/react-table.
+ * @param {string} [searchPlaceholder="Search..."] - Placeholder text for the search input.
+ * @param {boolean} [showDatePicker=false] - Flag to show/hide the date picker.
+ * @param {boolean} [showExportButton=false] - Flag to show/hide the export button.
+ * @param {string} [exportButtonText="Export"] - Text displayed on the export button.
+ * @param {Function} [onExportClick] - Callback for export button click event.
+ * @param {string} [searchInputClassName="w-full lg:w-[443px]"] - CSS class for search input.
+ * @param {VisibilityState} [columnVisibility] - Current visibility state of columns.
+ * @param {string[]} [excludeFromVisibilityToggle=["select", "actions"]] - Column IDs to exclude from visibility toggling.
+ * @param {Record<string, string>} [customColumnNames={}] - Custom display names for columns.
+ * @returns {JSX.Element} The rendered data table filter component.
+ */
 
 export function DataTableFilter<T>({
   searchTerm,
   handleFilterChange,
   setSelectedDate,
   table,
-  columns,
   searchPlaceholder = "Search...",
   showDatePicker = false,
   showExportButton = false,
@@ -47,13 +62,26 @@ export function DataTableFilter<T>({
   onExportClick,
   searchInputClassName = "w-full lg:w-[443px]",
   columnVisibility,
+  excludeFromVisibilityToggle = ["select", "actions"],
+  customColumnNames = {},
 }: DataTableFilterProps<T>) {
-  // Get filterable columns (exclude select and actions columns if present)
-  const getFilterableColumns = () => {
-    return columns.filter(
-      (col) =>
-        (col.canHide ?? true) && col.id !== "select" && col.id !== "actions"
-    );
+  const getAllColumns = () => {
+    return table.getAllColumns().filter((column) => {
+      const columnId = column.id;
+
+      // Skip columns that are explicitly excluded
+      if (excludeFromVisibilityToggle.includes(columnId)) {
+        return false;
+      }
+
+      // Skip columns that can't be hidden (if the column def has canHide: false)
+      if (column.columnDef.enableHiding === false) {
+        return false;
+      }
+
+      // Only include columns that have an accessor or id
+      return columnId && columnId !== "";
+    });
   };
 
   const toggleColumnVisibility = (columnId: string) => {
@@ -63,7 +91,33 @@ export function DataTableFilter<T>({
     }
   };
 
-  const filterableColumns = getFilterableColumns();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getColumnDisplayName = (columnId: string, columnHeader: any) => {
+    if (customColumnNames[columnId]) {
+      return customColumnNames[columnId];
+    }
+
+    if (typeof columnHeader === "string") {
+      return columnHeader;
+    }
+
+    if (
+      columnHeader &&
+      typeof columnHeader === "object" &&
+      columnHeader.props
+    ) {
+      if (typeof columnHeader.props.children === "string") {
+        return columnHeader.props.children;
+      }
+    }
+
+    return columnId
+      .split(/(?=[A-Z])/) // Split on capital letters
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
+  const filterableColumns = getAllColumns();
 
   return (
     <div className="p-4">
@@ -101,16 +155,25 @@ export function DataTableFilter<T>({
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {filterableColumns.map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  checked={columnVisibility?.[column.id] ?? true}
-                  onCheckedChange={() => toggleColumnVisibility(column.id)}
-                  onSelect={(event) => event.preventDefault()}
-                >
-                  {column.displayName}
-                </DropdownMenuCheckboxItem>
-              ))}
+              {filterableColumns.map((column) => {
+                const columnId = column.id;
+                const displayName = getColumnDisplayName(
+                  columnId,
+                  column.columnDef.header
+                );
+
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={columnId}
+                    checked={columnVisibility?.[column.id] ?? true}
+                    // checked={column.getIsVisible()}
+                    onCheckedChange={() => toggleColumnVisibility(columnId)}
+                    onSelect={(event) => event.preventDefault()}
+                  >
+                    {displayName}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
           {showExportButton && (
