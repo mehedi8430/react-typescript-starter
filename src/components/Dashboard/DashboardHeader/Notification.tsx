@@ -89,9 +89,7 @@ export default function Notification() {
     <section>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="secondary" className="size-8 bg-primary/10">
-            <NotificationIcon />
-          </Button>
+          <NotificationIcon className="cursor-pointer size-6" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[28.125rem] space-y-2 px-4 py-2.5">
           <div className="flex justify-between items-center">
@@ -129,10 +127,7 @@ export default function Notification() {
 
           <DropdownMenuSeparator />
 
-          <Link
-            to="/dashboard/all-notifications"
-            className="flex justify-center"
-          >
+          <Link to="/" className="flex justify-center">
             <Button variant="link">View all notifications</Button>
           </Link>
         </DropdownMenuContent>

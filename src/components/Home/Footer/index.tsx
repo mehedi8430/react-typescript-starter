@@ -1,4 +1,4 @@
-import Logo from "@/assets/images/logo.png";
+import Logo from "@/assets/react.svg?react";
 import googlePlay from "@/assets/images/googlePlay.png";
 import appStore from "@/assets/images/appStore.png";
 import Map from "@/assets/svgs/map.svg?react";
@@ -10,11 +10,11 @@ import LinkedIn from "@/assets/svgs/linkedin.svg?react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-success/5 to-primary/5 py-10 mt-20">
+    <footer className="bg-gradient-to-r from-success/5 to-primary/5 py-10">
       <div className="container mx-auto px-4 flex flex-col md:flex-row flex-wrap justify-between gap-10">
         {/* Logo + App Links */}
         <div className="flex flex-col items-center  gap-10 flex-1 min-w-[200px]">
-          <img src={Logo} alt="Logo" className="w-36" />
+          <Logo className="size-32 text-primary" />
           <div className="flex gap-2">
             <img src={googlePlay} alt="Google Play" className="h-10" />
             <img src={appStore} alt="App Store" className="h-10" />
@@ -76,7 +76,7 @@ export default function Footer() {
           <div className="flex items-start gap-4">
             <Map className="size-5 mt-1" />
             <div>
-              <h4 className="font-medium text-lg">The Booking Nest</h4>
+              <h4 className="font-medium text-lg">The React App</h4>
               <span className="text-muted-foreground text-sm">
                 Level 12, 100 Mount Street, North Sydney, NSW 2060 Australia
               </span>

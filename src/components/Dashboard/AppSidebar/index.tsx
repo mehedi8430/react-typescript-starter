@@ -1,172 +1,209 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
+import { ChevronRight } from "lucide-react";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
-  useSidebar,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
-import assets from "@/assets";
-import DashboardIcon from "@/assets/svgs/home.svg?react";
-import CalculatorIcon from "@/assets/svgs/calendar-plus.svg?react";
-import BookingIcon from "@/assets/svgs/booking.svg?react";
-import DueListIcon from "@/assets/svgs/due-list.svg?react";
-import ServicesIcon from "@/assets/svgs/Services.svg?react";
-// import EyeFourIcon from "@/assets/svgs/eye.svg?react";
-import PressReleaseIcon from "@/assets/svgs/press-release.svg?react";
-import AddIcon from "@/assets/svgs/fi-rr-add.svg?react";
-import { useLocation } from "react-router";
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
-import NavMain from "./NavMain";
-import CollapsibleNav from "./CollapsibleNav";
-import useTheme from "@/theme";
 
-export type TNavMenu = {
-  title: string;
-  url: string;
-  icon: React.ReactNode;
-  end: boolean;
-  subItems?: {
-    title: string;
-    url: string;
-    icon: React.ReactNode;
-    end: boolean;
-  }[];
-};
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { state } = useSidebar();
-  const isMobile = useIsMobile();
-  const location = useLocation();
-  const { theme } = useTheme();
-
-  const items: TNavMenu[] = [
+// This is sample data.
+const data = {
+  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
+  navMain: [
     {
-      title: "Dashboard",
-      url: "/dashboard/home",
-      icon: <DashboardIcon />,
-      end: false,
-    },
-    {
-      title: "Calendar",
-      url: "/dashboard/calendar-management",
-      icon: <CalculatorIcon />,
-      end: true,
-    },
-    {
-      title: "Booking",
-      url: "/dashboard/bookings",
-      icon: <BookingIcon />,
-      end: false,
-    },
-    {
-      title: "Due List",
-      url: "/dashboard/payment",
-      icon: <DueListIcon />,
-      end: true,
-    },
-    {
-      title: "Services",
-      url: "/dashboard/services",
-      icon: <ServicesIcon />,
-      end: false,
-      subItems: [
+      title: "Getting Started",
+      url: "#",
+      items: [
         {
-          title: "All Service",
-          url: "/dashboard/services/release",
-          icon: <PressReleaseIcon />,
-          end: true,
+          title: "Installation",
+          url: "#",
         },
         {
-          title: "Add Service",
-          url: "/dashboard/services/add",
-          icon: <AddIcon />,
-          end: true,
+          title: "Project Structure",
+          url: "#",
         },
       ],
     },
     {
-      title: "All Table Demos",
-      url: "/dashboard/tables",
-      icon: <DueListIcon />,
-      end: true,
+      title: "Building Your Application",
+      url: "#",
+      items: [
+        {
+          title: "Routing",
+          url: "#",
+        },
+        {
+          title: "Data Fetching",
+          url: "#",
+          isActive: true,
+        },
+        {
+          title: "Rendering",
+          url: "#",
+        },
+        {
+          title: "Caching",
+          url: "#",
+        },
+        {
+          title: "Styling",
+          url: "#",
+        },
+        {
+          title: "Optimizing",
+          url: "#",
+        },
+        {
+          title: "Configuring",
+          url: "#",
+        },
+        {
+          title: "Testing",
+          url: "#",
+        },
+        {
+          title: "Authentication",
+          url: "#",
+        },
+        {
+          title: "Deploying",
+          url: "#",
+        },
+        {
+          title: "Upgrading",
+          url: "#",
+        },
+        {
+          title: "Examples",
+          url: "#",
+        },
+      ],
     },
-  ];
+    {
+      title: "API Reference",
+      url: "#",
+      items: [
+        {
+          title: "Components",
+          url: "#",
+        },
+        {
+          title: "File Conventions",
+          url: "#",
+        },
+        {
+          title: "Functions",
+          url: "#",
+        },
+        {
+          title: "next.config.js Options",
+          url: "#",
+        },
+        {
+          title: "CLI",
+          url: "#",
+        },
+        {
+          title: "Edge Runtime",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Architecture",
+      url: "#",
+      items: [
+        {
+          title: "Accessibility",
+          url: "#",
+        },
+        {
+          title: "Fast Refresh",
+          url: "#",
+        },
+        {
+          title: "Next.js Compiler",
+          url: "#",
+        },
+        {
+          title: "Supported Browsers",
+          url: "#",
+        },
+        {
+          title: "Turbopack",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Community",
+      url: "#",
+      items: [
+        {
+          title: "Contribution Guide",
+          url: "#",
+        },
+      ],
+    },
+  ],
+};
 
-  // Helper function to check if any sub-item is active
-  const isSubItemActive = (subItems: any[]) => {
-    return subItems.some((subItem) => {
-      if (subItem.end) {
-        return location.pathname === subItem.url;
-      }
-      return location.pathname.startsWith(subItem.url);
-    });
-  };
-
-  // Helper function to check if main item is active (excluding parent items with sub-items)
-  const isItemActive = (item: any) => {
-    // For items with sub-items, only check direct URL match, not sub-items
-    if (item.subItems) {
-      if (item.end) {
-        return location.pathname === item.url;
-      }
-      return (
-        location.pathname.startsWith(item.url) &&
-        !isSubItemActive(item.subItems)
-      );
-    }
-    // For items without sub-items, check normally
-    if (item.end) {
-      return location.pathname === item.url;
-    }
-    return location.pathname.startsWith(item.url);
-  };
-
-  if (items.length < 0) {
-    return;
-  }
-
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar
-      collapsible="icon"
-      className="top-(--header-height) h-[calc(100vh-var(--header-height))]! rounded-r-3xl"
-      {...props}
-    >
-      <div className="md:hidden py-5">
-        <img src={assets.image.logo} alt="logo" className="w-[12rem] mx-auto" />
-      </div>
-
-      <SidebarContent
-        className={cn(
-          "h-full rounded-r-3xl py-6",
-          state === "collapsed" && !isMobile ? "px-2" : "px-4",
-          theme === "light" ? "sidebar" : "sidebar-dark border-r-2"
-        )}
-      >
-        <SidebarMenu>
-          {items.map((item, i) => {
-            const isActive = isItemActive(item);
-            const hasSubItems = item.subItems && item.subItems.length > 0;
-
-            if (hasSubItems) {
-              return (
-                <CollapsibleNav
-                  key={i}
-                  isActive={isActive}
-                  isMobile={isMobile}
-                  item={item}
-                  state={state}
-                />
-              );
-            }
-
-            return (
-              <NavMain key={i} isMobile={isMobile} item={item} state={state} />
-            );
-          })}
-        </SidebarMenu>
+    <Sidebar {...props} className="shadow-lg bg-sidebar">
+      <SidebarHeader>
+        <h1 className="text-center text-primary text-2xl">FinCoach</h1>
+      </SidebarHeader>
+      <SidebarContent className="gap-0">
+        {/* We create a collapsible SidebarGroup for each parent. */}
+        {data.navMain.map((item) => (
+          <Collapsible
+            key={item.title}
+            title={item.title}
+            defaultOpen
+            className="group/collapsible"
+          >
+            <SidebarGroup>
+              <SidebarGroupLabel
+                asChild
+                className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sm"
+              >
+                <CollapsibleTrigger>
+                  {item.title}{" "}
+                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                </CollapsibleTrigger>
+              </SidebarGroupLabel>
+              <CollapsibleContent>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {item.items.map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild isActive={item.isActive}>
+                          <a href={item.url}>{item.title}</a>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </CollapsibleContent>
+            </SidebarGroup>
+          </Collapsible>
+        ))}
       </SidebarContent>
+      <SidebarRail />
     </Sidebar>
   );
 }

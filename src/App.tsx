@@ -1,7 +1,15 @@
+import { Navigate } from "react-router";
+
 export default function App() {
+  const isLoggedIn = false;
+
   return (
-    <main className="text-2xl">
-      App is running...
-    </main>
+    <>
+      {isLoggedIn ? (
+        <Navigate to="/dashboard/home" replace />
+      ) : (
+        <Navigate to="/login" replace />
+      )}
+    </>
   );
-};
+}

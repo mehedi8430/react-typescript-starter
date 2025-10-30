@@ -18,7 +18,7 @@ import { paymentApi, type Payment } from "./tableDemoApi";
 import { Badge } from "@/components/ui/badge";
 import { FilterHeader } from "@/components/DataTable/FilterHeader";
 
-export default function TableDemo1() {
+export default function TableDemo3() {
   const tableRef = useRef<DataTableHandle<Payment> | null>(null);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -229,7 +229,9 @@ export default function TableDemo1() {
   return (
     <section className="">
       <div className="flex flex-col items-center justify-between space-y-1 lg:flex-row">
-        <h1 className="text-xl font-semibold md:text-[26px]">Basic Table</h1>
+        <h1 className="text-xl font-semibold md:text-[26px]">
+          Table With Style Customization
+        </h1>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -286,17 +288,30 @@ export default function TableDemo1() {
             isLoading={isLoading}
             page={page}
             limit={limit}
-            total={
-              statusFilter || paymentMethodFilter
-                ? filteredPayments.length
-                : total
-            }
+            total={total}
             onPageChange={setPage}
             onLimitChange={setLimit}
             actions={actions}
             ref={tableRef}
             columnVisibility={columnVisibility}
             setColumnVisibility={setColumnVisibility}
+            tableStyles={{
+              container: "",
+              table: "",
+              header: {
+                row: "border-b-2 border-gray-200",
+                cell: "",
+                wrapper: "",
+              },
+              body: {
+                row: "",
+                cell: "",
+              },
+              actions: {
+                cell: "",
+                wrapper: "",
+              },
+            }}
           />
         </div>
       </div>

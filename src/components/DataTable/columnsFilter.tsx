@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChevronDown, Columns3 } from "lucide-react";
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import type { DataTableHandle } from "./dataTable";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import type { DataTableHandle } from "./DataTable";
 import { useEffect, useState } from "react";
 import type { Table } from "@tanstack/react-table";
 
-export default function ColumnsFilter({ tableRef }: { tableRef: React.RefObject<DataTableHandle<any> | null> }) {
+export default function ColumnsFilter({
+  tableRef,
+}: {
+  tableRef: React.RefObject<DataTableHandle<any> | null>;
+}) {
   const [table, setTable] = useState<Table<any> | null>(null);
 
   useEffect(() => {
@@ -37,16 +46,14 @@ export default function ColumnsFilter({ tableRef }: { tableRef: React.RefObject<
                   key={column.id}
                   className="capitalize"
                   checked={column.getIsVisible()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
                   {column.id}
                 </DropdownMenuCheckboxItem>
-              )
+              );
             })}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
   );
-};
+}
