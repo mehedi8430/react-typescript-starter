@@ -1,1 +1,47 @@
+/* import fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/* import tailwind */
 @import "tailwindcss";
+
+/* define theme */
+@theme inline {
+  /* font */
+  --font-poppins: "Poppins", sans-serif;
+
+  /* colors */
+  /* background color */
+  --color-background: var(--background);
+  /* text color */
+  --color-foreground: var(--foreground);
+  /* primary color */
+  --color-primary: var(--primary);
+}
+
+/* light theme */
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #30afb8;
+}
+
+/* dark theme */
+.dark {
+  --background: #0b0b0b;
+  --foreground: #f8f8f8;
+  --primary: #30afb8;
+}
+
+/* base styles */
+@layer base {
+  * {
+    @apply box-border p-0 m-0;
+  }
+
+  html {
+    @apply scroll-smooth font-poppins;
+  }
+
+  body {
+    @apply bg-background text-foreground font-poppins;
+  }
+}
