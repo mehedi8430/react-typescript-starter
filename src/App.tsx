@@ -1,15 +1,7 @@
-import { Navigate } from "react-router";
-
 export default function App() {
-  const isLoggedIn = false;
-
   return (
-    <>
-      {isLoggedIn ? (
-        <Navigate to="/dashboard/home" replace />
-      ) : (
-        <Navigate to="/login" replace />
-      )}
-    </>
+    <div className="flex items-center justify-center h-screen">
+      <h1 className="text-3xl font-bold underline">Hello world! Just Strated!</h1>
+    </div>
   );
 }
