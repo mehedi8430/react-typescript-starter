@@ -1,0 +1,8 @@
+{
+  "greeting": "Hallo, willkommen!",
+  "description": {
+    "line1": "Dies ist Zeile {{line}}",
+    "line2": "Dies ist Zeile 2"
+  },
+  "interpolation": "Dies ist ein <1>{{value}}</1> Text"
+}
