@@ -22,7 +22,11 @@ export default function LanguageSelector() {
 
   return (
     <div>
-      <select onChange={(e) => changeLanguage(e.target.value)}>
+      <select
+        value={i18n.language}
+        onChange={(e) => changeLanguage(e.target.value)}
+        className="border border-primary px-1"
+      >
         {languages.map((lang) => (
           <option key={lang.code} value={lang.code}>
             {lang.lang}

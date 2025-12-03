@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "light" | "system";
+type Theme = "dark" | "light";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -26,10 +26,44 @@ export function ThemeProvider({
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  // Internal state setter for theme 
+  const [theme, setThemeState] = useState<Theme>(() => {
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      return stored as Theme;
+    }
+    // Detect system preference if no stored value
+    if (window.matchMedia) {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    // Fallback to default if matchMedia is not supported
+    return defaultTheme;
+  });
 
+  // Effect to listen for system theme changes (only if no user preference is stored)
+  useEffect(() => {
+    if (localStorage.getItem(storageKey)) {
+      // User has set a preference, don't follow system changes
+      return;
+    }
+
+    if (!window.matchMedia) {
+      // matchMedia not supported, no listener needed
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      setThemeState(e.matches ? "dark" : "light");
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [storageKey]);
+
+  // Effect to update root class based on theme
   useEffect(() => {
     const root = window.document.documentElement;
 
@@ -38,12 +72,15 @@ export function ThemeProvider({
     root.classList.add(theme);
   }, [theme]);
 
+  // Public setTheme that persists to localStorage
+  const setTheme = (newTheme: Theme) => {
+    localStorage.setItem(storageKey, newTheme);
+    setThemeState(newTheme);
+  };
+
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
-    },
+    setTheme,
   };
 
   return (
