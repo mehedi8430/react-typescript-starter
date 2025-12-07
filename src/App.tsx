@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from "react-i18next";
-import LanguageSelector from "./components/LanguageSelector";
+import LanguageSelector from "./components/common/LanguageSelector";
 import { ThemeSwitcher } from "./components/ThemeSwitcher";
 
 export default function App() {

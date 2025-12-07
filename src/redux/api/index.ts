@@ -9,11 +9,12 @@ export const baseApi = createApi({
       const storedData = localStorage.getItem("persist:userInfo");
       const accessToken = JSON.parse(storedData!).token;
 
-      if (accessToken) headers.set("authorization", JSON.parse(accessToken));
+      if (accessToken)
+        headers.set("Authorization", `Bearer ${JSON.parse(accessToken)}`);
 
       return headers;
     },
   }),
   endpoints: () => ({}),
-  tagTypes: ["auth", "user"],
+  tagTypes: ["Auth"],
 });

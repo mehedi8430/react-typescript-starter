@@ -9,7 +9,7 @@ export const authApi = baseApi.injectEndpoints({
         credentials: "include",
         body: data,
       }),
-      invalidatesTags: ["auth"],
+      invalidatesTags: ["Auth"],
     }),
 
     forgotPassword: build.mutation({
