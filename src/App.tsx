@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from "react-i18next";
 import LanguageSelector from "./components/common/LanguageSelector";
-import { ThemeSwitcher } from "./components/ThemeSwitcher";
+import { ThemeSwitcher } from "./components/common/ThemeSwitcher";
 
 export default function App() {
   const { t } = useTranslation();

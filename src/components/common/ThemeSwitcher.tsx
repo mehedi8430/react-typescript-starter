@@ -1,5 +1,5 @@
-import { MoonSvg, SunSvg } from "../assets/icons";
-import useTheme from "../providers/ThemeProvider";
+import { MoonSvg, SunSvg } from "../../assets/icons";
+import useTheme from "../../providers/ThemeProvider";
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();

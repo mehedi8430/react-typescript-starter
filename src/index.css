@@ -9,12 +9,20 @@
   --font-poppins: "Poppins", sans-serif;
 
   /* colors */
-  /* background color */
   --color-background: var(--background);
-  /* text color */
   --color-foreground: var(--foreground);
-  /* primary color */
   --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
 }
 
 /* light theme */

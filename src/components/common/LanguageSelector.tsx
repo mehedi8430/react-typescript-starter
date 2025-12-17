@@ -25,7 +25,7 @@ export default function LanguageSelector() {
       <select
         value={i18n.language}
         onChange={(e) => changeLanguage(e.target.value)}
-        className="border border-primary px-1"
+        className="border border-primary px-2 py-0.5 rounded-md bg-primary text-foreground"
       >
         {languages.map((lang) => (
           <option key={lang.code} value={lang.code}>
